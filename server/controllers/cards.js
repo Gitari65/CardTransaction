@@ -23,16 +23,36 @@ exports.addCard=async(req,res)=>{
 }
 exports.makeTransaction=async (req,res)=>{
     try {
-        const {cardId,amount}=req.body;
+        const {cardId,amount,transactionType}=req.body;
         const card=Card.findById(cardId);
         if (!card){
             res.status(400).json({error:"Card not found"});
 
-        }  
-        if (card.balance<amount){
+        } 
+        if(transactionType==='withdraw'||transactionType==='send') 
+        {
+         if (card.balance<amount){
             res.status(400).json({error:"Card not found"});
         }    
-        card.balance-=amount;
+        if(transactionType==='withdraw'){
+           card.balance-=amount; 
+            //add transaction to the history
+        card.transactions.push({amount});
+
+        await card.save();
+        res.status(200).json({message:"Withdraw Successful",card});
+
+        }
+        if(transactionType==='deposit'){
+            card.balance+=amount;
+            card.transactions.push({amount});
+            await card.save();
+            res.status(200).json({message:"Deposit Successful",card});
+
+
+        }
+        }   
+        
         //add transaction to the history
         card.transactions.push({amount});
 
