@@ -3,7 +3,7 @@ const schema=mongoose.Schema;
 
 const transactionSchema=new schema({
     amount:{type:Number,required:true},
-    date:{type:date,required:true,default:Date.now}
+    date:{type:Date,required:true,default:Date.now}
 })
 const cardSchema= new schema({
     cardNumber:{type:String,required:true,unique:true},
